@@ -1,39 +1,46 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { COLORS } from "../../styles/colors";
-import styles from "../../styles/homeStyles";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Background } from "@react-navigation/elements";
+import React, { useEffect } from "react";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-export default function HomeScreen() {
-  const nav = useNavigation();
+import HomeScreen from "./screens/HomeScreen";
+import CadastroScreen from "./screens/CadastroScreen";
+// import HistoryScreen from "./screens/HistoryScreen";
+import ConfigsScreen from "./screens/ConfigsScreen";
+import AboutScreen from "./screens/AboutScreen";
 
-  const blocks = [
-    { title: "Cadastro", screen: "Cadastro", icon: "person-add" },
-    { title: "Configurações", screen: "Configurações", icon: "settings" },
-    { title: "Histórico", screen: "Histórico", icon: "history" },
-    { title: "Sobre", screen: "Sobre", icon: "info" },
-  ];
+import { initDB } from "../db/db";
+
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { COLORS } from "../styles/colors";
+
+const Drawer = createDrawerNavigator();
+
+export default function App() {
+  useEffect(() => {
+    initDB().catch((err) => {
+      console.log("DB init error:", err);
+    });
+  }, []);
 
   return (
-    <View style={[styles.container]}>
-      <Text style={styles.title}>App Cadastro de Cidadão</Text>
-      <View style={styles.grid}>
-        {blocks.map((b, i) => (
-          <TouchableOpacity
-            activeOpacity={0.8}
-            key={i}
-            styles={[
-              styles.block,
-              { background: Object.values(COLORS)[i % 4] },
-            ]}
-            onPress={() => nav.navigate(b.screen)}
-          >
-            <MaterialIcons naem={b.icon} size={42} color="#064E2E" />
-            <Text style={styles.blockText}>{b.title}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <Drawer.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: COLORS.pale,
+            },
+            headerTintColor: COLORS.darkText,
+          }}
+        >
+          <Drawer.Screen name="Home" component={HomeScreen} />
+          <Drawer.Screen name="Cadastro" component={CadastroScreen} />
+          {/* <Drawer.Screen name="Histórico" component={HistoryScreen} /> */}
+          <Drawer.Screen name="Configurações" component={ConfigsScreen} />
+          <Drawer.Screen name="Sobre" component={AboutScreen} />
+        </Drawer.Navigator>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
