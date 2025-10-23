@@ -3,35 +3,27 @@ import { openDatabaseSync } from "expo-sqlite";
 const db = openDatabaseSync("cidadaos.db");
 
 /**
- * @returns{Promise}
+ * @returns {Promise}
  */
-
 export function initDB() {
   return db.execAsync(`
-        CREATE TABLE IF NOT EXISTS citizens (
-            id INTEGER PRIMARY KEY NOT NULL,
-            auto-incremento
-            cpf TEXT NOT NULL UNIQUE,
-            obrigatório
-            name TEXT NOT NULL,
-            obrigatório
-            birth TEXT,
-            cep TEXT,
-            street TEXT,
-            av, etc.
-            neighborhood TEXT,
-            city TEXT,
-            state TEXT,
-            number TEXT,
-            complement TEXT
-            bloco, etc.
-        );
-        
-    `);
+    CREATE TABLE IF NOT EXISTS citizens (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      cpf TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      birth TEXT,
+      cep TEXT,
+      street TEXT,
+      neighborhood TEXT,
+      city TEXT,
+      state TEXT,
+      number TEXT,
+      complement TEXT
+    );
+  `);
 }
 
 /**
- *
  * @param {object} citizen
  * @param {string} citizen.cpf
  * @param {string} citizen.name
@@ -43,11 +35,8 @@ export function initDB() {
  * @param {string} citizen.state
  * @param {string} citizen.number
  * @param {string} citizen.complement
- *
  * @returns {Promise}
- *
  */
-
 export async function insertCitizen(citizen) {
   const {
     cpf,
@@ -63,10 +52,8 @@ export async function insertCitizen(citizen) {
   } = citizen;
 
   return db.runAsync(
-    `INSERT INTO citizens
-        
-        (cpf, name, birth, cep, street, neighborhood, city, state, number, complement) VALUES (?,?,?,?,?,?,?,?,?,?);
-        `,
+    `INSERT INTO citizens (cpf, name, birth, cep, street, neighborhood, city, state, number, complement) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
     [
       cpf,
       name,
@@ -83,11 +70,8 @@ export async function insertCitizen(citizen) {
 }
 
 /**
- *
  * @returns {Promise<Array>}
- *
  */
-
 export async function fetchAllCitizens() {
   const result = await db.getAllAsync(`SELECT * FROM citizens ORDER BY name`);
   return result;
@@ -97,17 +81,15 @@ export async function fetchAllCitizens() {
  * @param {number} id
  * @returns {Promise}
  */
-
 export async function deleteCitizen(id) {
-  return db.runAsync(`DELETE FROM citizen WHERE id = ?;`, [id]);
+  return db.runAsync(`DELETE FROM citizens WHERE id = ?;`, [id]);
 }
 
 /**
  * @param {number} id
  * @param {Object} citizen
- * @param {Promise}
+ * @returns {Promise}
  */
-
 export async function updateCitizen(id, citizen) {
   const {
     cpf,
@@ -124,8 +106,8 @@ export async function updateCitizen(id, citizen) {
 
   return db.runAsync(
     `UPDATE citizens
-    SET cpf=?, name=?, birth=?, cep=?, street=?, neighborhood=?, city=?, state=?, number=?, complement=? WHERE id=?;
-        `,
+     SET cpf = ?, name = ?, birth = ?, cep = ?, street = ?, neighborhood = ?, city = ?, state = ?, number = ?, complement = ? 
+     WHERE id = ?;`,
     [
       cpf,
       name,
@@ -137,6 +119,7 @@ export async function updateCitizen(id, citizen) {
       state,
       number,
       complement,
+      id,
     ]
   );
 }

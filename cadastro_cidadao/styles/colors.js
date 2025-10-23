@@ -6,7 +6,9 @@ export const COLORS = {
     mid: "#CAE8BD",
     strong: "#B0DB9C",
     white: "#FFF",
-    darkText: "#0F1720"
+    darkText: "#0F1720",
+    shadow: "#000",
+    border: "#CFE6C6"
 
 
 }
